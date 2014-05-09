@@ -1,0 +1,17 @@
+
+public class Sierpinskitriangel extends Flake {
+	public void draw(Turtle turtle,int n,double size) {
+		this.turtle = turtle;
+		turtle.turnTo(0.0);
+		drawTriangle(n,size);
+	}
+
+	private void drawSide(int n,double size) {
+		if ( n <= 0 )
+			turtle.walk(size);
+		else {
+			double l = size/3.0;
+			
+		}
+	}
+}
