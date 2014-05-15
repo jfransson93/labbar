@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.geom.*;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -25,6 +24,11 @@ public class BoardDisplay extends Board implements Observer {
 		// compute offset to center it
 		rowOffset = (height-maxRow*gridSize)/2 + 2;
 		colOffset = (width-maxCol*gridSize)/2 + 2;
+		
+		// Init display
+		drawGrid();
+		knockDownWall(0, Point.Direction.LEFT);
+		knockDownWall(maxCell - 1, Point.Direction.RIGHT);
 	}
 	
 	private void drawGrid() {
@@ -81,28 +85,11 @@ public class BoardDisplay extends Board implements Observer {
 	}
 	    
 	public void update(Observable o, Object arg) {
-		
-		// Draws basic grid and start points for maze
-		drawGrid();
-		knockDownWall(0, Point.Direction.LEFT);
-		knockDownWall(maxCell - 1, Point.Direction.RIGHT);
-		
-		if( arg instanceof Maze) {
-			Maze m = (Maze) arg;
-			
-			// Smashes walls between connected cells
-			if( m.connectedCells != null ) {
-				for( Pair<Point, Point> w : m.connectedCells) {
-					knockDownWall(getCellId(w.first), w.first.getDirection(w.second));
-				}
-			}
-			
-			// Paints the calculated path
-			if( m.path != null ) {
-				for( Integer cellId : m.path ) {
-					fillCell(cellId);
-				}
-			}
+		if( arg instanceof Pair) {
+			Pair<Integer, Point.Direction> p = (Pair<Integer, Point.Direction>) arg;
+			knockDownWall(p.first, p.second);
+		} else if( arg instanceof Integer ) {
+			fillCell((Integer) arg);
 		}
 	}
 }
